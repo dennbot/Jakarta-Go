@@ -4,7 +4,7 @@ import { doc, getDoc, collection, addDoc, query, where, getDocs, serverTimestamp
 import { db, auth } from '../lib/firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import YourTripPopup from '../Components/YourTrip';
-import AddToTripButton from '../YourTripComponents/AddtoTripButton';
+import AddToTripButton from '../YourTripComponents/AddToTripButton';
 import DestinationCarousel from '../Components/DestinationCarousel';
 import Navbar from '../Components/Navbar';
 
