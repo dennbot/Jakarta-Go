@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const DestinationCarousel = ({ activeCategory, searchQuery }) => {
   const [destinations, setDestinations] = useState([]);
@@ -147,12 +148,9 @@ const DestinationCarousel = ({ activeCategory, searchQuery }) => {
                       {destination.description || "Explore this amazing destination in Jakarta!"}
                     </p>
                     <div className="mt-4 flex justify-between items-center">
-                      <button
-                        onClick={() => window.location.href = `/destination/${destination.key}`}
-                        className="text-blue-500 hover:text-blue-700 text-sm font-medium"
-                      >
+                      <Link to="/rekomendasi" className="text-blue-500 hover:text-blue-700 text-sm font-medium">
                         Learn More
-                      </button>
+                      </Link>
                       {destination.price && (
                         <div className="text-sm font-semibold text-gray-700">
                           {typeof destination.price === 'number'
