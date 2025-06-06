@@ -304,9 +304,9 @@ function RekomendasiPage() {
   };
 
   // Loading state handling
-  if(loading) {
-    return <h1 className="text-2xl font-bold text-center py-10">Loading data from firebase.....</h1>
-  }
+  // if(loading) {
+  //   return <h1 className="text-2xl font-bold text-center py-10">Loading data from firebase.....</h1>
+  // }
 
   // Error state handling
   if(error) {
