@@ -82,6 +82,7 @@ const DestinationCarousel = ({ activeCategory, searchQuery }) => {
     }
   }, [activeCategory, searchQuery]);
 
+  // Handle navigation with error handling
   const handleLearnMore = (destinationId) => {
     try {
       navigate(`/destination/${destinationId}`);
@@ -144,18 +145,13 @@ const DestinationCarousel = ({ activeCategory, searchQuery }) => {
                         src={destination.imgurl} 
                         alt={destination.name} 
                         className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                          if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
-                        }}
+                        onError={(e) => { e.target.style.display = 'none'; }}
                       />
-                    ) : null}
-                    <div 
-                      className="w-full h-full flex items-center justify-center bg-gray-200"
-                      style={{ display: destination.imgurl ? 'none' : 'flex' }}
-                    >
-                      <span className="text-gray-400">No Image</span>
-                    </div>
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                        <span className="text-gray-400">No Image</span>
+                      </div>
+                    )}
                     {destination.category && (
                       <div className="absolute top-3 right-3 bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
                         {destination.category}
