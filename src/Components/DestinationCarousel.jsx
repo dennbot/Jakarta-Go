@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
 
 const DestinationCarousel = ({ activeCategory, searchQuery }) => {
   const [destinations, setDestinations] = useState([]);
@@ -11,6 +11,7 @@ const DestinationCarousel = ({ activeCategory, searchQuery }) => {
   const [reviewsData, setReviewsData] = useState({});
   const [currentSlide, setCurrentSlide] = useState(0);
   const carouselRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,6 +37,7 @@ const DestinationCarousel = ({ activeCategory, searchQuery }) => {
     };
 
     fetchData();
+    // eslint-disable-next-line
   }, []);
 
   const fetchReviews = async () => {
@@ -79,6 +81,15 @@ const DestinationCarousel = ({ activeCategory, searchQuery }) => {
       carouselRef.current.scrollLeft = 0;
     }
   }, [activeCategory, searchQuery]);
+
+  const handleLearnMore = (destinationId) => {
+    try {
+      navigate(`/destination/${destinationId}`);
+    } catch (error) {
+      console.error("Navigation error:", error);
+      window.location.href = `/destination/${destinationId}`;
+    }
+  };
 
   if (loading) {
     return (
@@ -129,12 +140,22 @@ const DestinationCarousel = ({ activeCategory, searchQuery }) => {
                 <div key={destination.key} className="flex-none snap-start w-80 overflow-hidden rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300">
                   <div className="relative h-48">
                     {destination.imgurl ? (
-                      <img src={destination.imgurl} alt={destination.name} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                        <span className="text-gray-400">No Image</span>
-                      </div>
-                    )}
+                      <img 
+                        src={destination.imgurl} 
+                        alt={destination.name} 
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                        }}
+                      />
+                    ) : null}
+                    <div 
+                      className="w-full h-full flex items-center justify-center bg-gray-200"
+                      style={{ display: destination.imgurl ? 'none' : 'flex' }}
+                    >
+                      <span className="text-gray-400">No Image</span>
+                    </div>
                     {destination.category && (
                       <div className="absolute top-3 right-3 bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
                         {destination.category}
@@ -148,9 +169,12 @@ const DestinationCarousel = ({ activeCategory, searchQuery }) => {
                       {destination.description || "Explore this amazing destination in Jakarta!"}
                     </p>
                     <div className="mt-4 flex justify-between items-center">
-                      <Link to="/rekomendasi" className="text-blue-500 hover:text-blue-700 text-sm font-medium">
+                      <button
+                        onClick={() => handleLearnMore(destination.key)}
+                        className="text-blue-500 hover:text-blue-700 text-sm font-medium transition-colors duration-200 hover:underline"
+                      >
                         Learn More
-                      </Link>
+                      </button>
                       {destination.price && (
                         <div className="text-sm font-semibold text-gray-700">
                           {typeof destination.price === 'number'
