@@ -111,7 +111,7 @@ const About = () => {
   <div className="flex justify-center gap-10 flex-wrap">
     {/* Card 1 */}
     <div className="bg-white p-6 rounded-lg shadow-2xl w-[400px]">
-      <img src="/ex.jpg" alt="Jane Doe" className="w-full h-120 object-cover rounded-t-lg" />
+      <img src="/reymen.jpg" alt="Jane Doe" className="w-full h-120 object-cover rounded-t-lg" />
       <h3 className="font-semibold text-lg mt-4">Reymen Sow</h3>
       <h4 className="font-semibold text-lg mt-1">2540128316</h4>
       <p className="text-gray-600">Developer</p>
@@ -119,7 +119,7 @@ const About = () => {
 
     {/* Card 2 */}
     <div className="bg-white p-6 rounded-lg shadow-2xl w-[400px]">
-      <img src="/ex.jpg" alt="John Smith" className="w-full h-120 object-cover rounded-t-lg" />
+      <img src="/desmond.jpg" alt="John Smith" className="w-full h-120 object-cover rounded-t-lg" />
       <h3 className="font-semibold text-lg mt-4">Desmond Connery</h3>
       <h4 className="font-semibold text-lg mt-1">2501981850</h4>
       <p className="text-gray-600">Developer</p>
