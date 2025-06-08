@@ -218,7 +218,6 @@ const RundownGenerator = ({ isOpen, onClose, onGenerateRundown, selectedDestinat
       options: [
         { value: 'half-day', label: 'Setengah hari (4-5 jam)' },
         { value: 'full-day', label: 'Full day (8-10 jam)' },
-        { value: 'weekend', label: 'Weekend (2 hari)' },
       ],
       type: 'radio',
     },
