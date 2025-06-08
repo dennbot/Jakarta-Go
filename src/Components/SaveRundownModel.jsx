@@ -1,78 +1,84 @@
-import React, { useState, useEffect } from 'react';
-import { X, Save, MapPin, Calendar, DollarSign, Users } from 'lucide-react';
-import { useRundown } from './hooks/useRundown';
+import React, { useState, useEffect } from "react";
+import { X, Save, MapPin, Calendar, DollarSign } from "lucide-react";
+import { useRundown } from "./hooks/useRundown";
 
-const SaveRundownModel = ({ 
-  isOpen, 
-  onClose, 
-  rundownData, 
+const SaveRundownModel = ({
+  isOpen,
+  onClose,
+  rundownData,
   userId,
   onSaveSuccess,
-  selectedrundown 
+  selectedrundown,
 }) => {
-  console.log("debug rundown data:", rundownData); // debug
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [tags, setTags] = useState('');
-  const [tripType, setTripType] = useState('general');
+  // Debug
+  console.log("debug rundown data:", rundownData);
+  console.log("debug selected rundown:", selectedrundown);
+
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [tags, setTags] = useState("");
+  const [tripType, setTripType] = useState("general");
   const [validationErrors, setValidationErrors] = useState([]);
-  
+
   const { saveRundown, saving, error } = useRundown(userId);
   const [processedRundownData, setProcessedRundownData] = useState(null);
 
-  // ===== PRICE FORMATTING FUNCTIONS (MATCHES YourTripPopup EXACTLY) =====
-  
-  // Price parsing function - matches YourTripPopup exactly
+  // Price parsing function
   const parsePrice = (price) => {
     if (price === undefined || price === null) return 0;
-    if (typeof price === 'number') return price;
-    if (typeof price === 'string') {
-      const numericString = price.replace(/[^0-9]/g, '');
+    if (typeof price === "number") return price;
+    if (typeof price === "string") {
+      const numericString = price.replace(/[^0-9]/g, "");
       const parsed = parseFloat(numericString);
       return isNaN(parsed) ? 0 : parsed;
     }
     return 0;
   };
 
-  // Single price formatting - matches YourTripPopup exactly
+  // Single price formatting
   const formatSinglePrice = (price) => {
     const numericPrice = parsePrice(price);
-    if (numericPrice === 0) return '-';
-    
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
+    if (numericPrice === 0) return "-";
+
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }).format(numericPrice).replace('IDR', 'Rp');
+      maximumFractionDigits: 0,
+    })
+      .format(numericPrice)
+      .replace("IDR", "Rp");
   };
 
-  // Calculate budget estimation - EXACTLY matches YourTripPopup logic
+  // Calculate budget estimation
   const calculateBudgetEstimation = (destinations) => {
     let totalLow = 0;
     let totalHigh = 0;
 
     if (!destinations || !Array.isArray(destinations)) {
-      return '-';
+      return "-";
     }
 
     destinations.forEach((dest) => {
-      const priceValue = dest.original?.price || 
-                       (dest.price && dest.price.match && dest.price.match(/\d+/) ? dest.price.replace(/\D/g, '') : 0) ||
-                       dest.estimatedCost || 
-                       0;
-      
+      const priceValue =
+        dest.original?.price ||
+        (dest.price && dest.price.match && dest.price.match(/\d+/)
+          ? dest.price.replace(/\D/g, "")
+          : 0) ||
+        dest.estimatedCost ||
+        0;
+
       const numericPrice = parsePrice(priceValue);
-      
+
       totalLow += numericPrice;
-      totalHigh += numericPrice * 1.1; // Add 10% buffer (matches YourTripPopup)
+      totalHigh += numericPrice * 1.1; // Add 10% buffer
     });
 
-    // Add transportation buffer (matches YourTripPopup)
+    // Add transportation buffer
     totalLow += 0;
     totalHigh += 10000;
 
-    // Format the range exactly like YourTripPopup
+    // Format the range
     const formatNumber = (num) => {
       return Math.round(num)
         .toString()
@@ -82,80 +88,107 @@ const SaveRundownModel = ({
     return `Rp ${formatNumber(totalLow)} - ${formatNumber(totalHigh)}/pax`;
   };
 
-  // ===== END PRICE FORMATTING FUNCTIONS =====
-
   // Handle different data sources and normalize the structure
   useEffect(() => {
     if (rundownData) {
       setProcessedRundownData(rundownData);
     } else if (selectedrundown && selectedrundown.length > 0) {
-      setProcessedRundownData({
-        itinerary: selectedrundown,
-        title: "",
+      // Convert selectedrundown to rundown format
+      const convertedRundown = {
+        title: "Manual Trip Rundown",
         description: "",
         tags: [],
-        tripType: "general"
-      });
+        tripType: "general",
+        itinerary: selectedrundown.map((dest, index) => ({
+          time: `${(9 + Math.floor(index * 2)).toString().padStart(2, '0')}:00`,
+          activity: getDestinationDisplayName(dest, index),
+          duration: "2 jam",
+          notes: `Kunjungi ${getDestinationDisplayName(dest, index)}`,
+          price: dest.price || "Free",
+          location: getDestinationLocation(dest),
+          category: getDestinationCategory(dest),
+          estimatedCost: getDestinationPrice(dest),
+          originalData: dest,
+          order: index + 1,
+          ...dest,
+        })),
+        budgetEstimation: calculateBudgetEstimation(selectedrundown),
+        dataSource: "manual",
+        totalDestinations: selectedrundown.length,
+      };
+      setProcessedRundownData(convertedRundown);
+    } else {
+      setProcessedRundownData(null);
     }
+    // eslint-disable-next-line
   }, [rundownData, selectedrundown]);
 
   // Function to get display name for each destination
   const getDestinationDisplayName = (item, index) => {
     if (!item) return `Destinasi ${index + 1}`;
 
-    if (item.label && typeof item.label === 'string') {
+    if (item.label && typeof item.label === "string") {
       try {
-        const parts = item.label.split(' - ');
+        const parts = item.label.split(" - ");
         if (parts.length > 1) {
-          return parts.slice(1).join(' - ');
+          return parts.slice(1).join(" - ");
         }
-        const withoutEmoji = item.label.replace(/^[\u{1F300}-\u{1F9FF}][\s]*/u, '');
-        const withoutCategory = withoutEmoji.replace(/^[^-]*-\s*/, '');
+        const withoutEmoji = item.label.replace(
+          /^[\u{1F300}-\u{1F9FF}][\s]*/u,
+          ""
+        );
+        const withoutCategory = withoutEmoji.replace(/^[^-]-\s/, "");
         return withoutCategory || item.label;
       } catch (error) {
-        console.error('Error parsing label:', error);
         return item.label;
       }
     }
 
+    if (item.activity) {
+      return item.activity;
+    }
+
     const possibleNames = [
-      item.activity,
       item.name,
       item.destinationName,
       item.title,
       item.placeName,
       item.location,
-      `Destinasi ${index + 1}`
     ];
 
-    return possibleNames.find(name => name && name.trim() !== '') || `Destinasi ${index + 1}`;
+    return (
+      possibleNames.find((name) => name && name.trim() !== "") ||
+      `Destinasi ${index + 1}`
+    );
   };
 
   // Function to get location for display
   const getDestinationLocation = (item) => {
-    if (!item) return '';
-    return item.location || item.address || item.place || item.area || '';
+    if (!item) return "";
+    return item.location || item.address || item.place || item.area || "";
   };
 
   // Function to get category
   const getDestinationCategory = (item) => {
-    if (!item) return 'General';
-    return item.category || item.type || item.categoryType || 'General';
+    if (!item) return "General";
+    return item.category || item.type || item.categoryType || "General";
   };
 
-  // Function to get price - matches YourTripPopup logic
+  // Function to get price
   const getDestinationPrice = (item) => {
     if (!item) return 0;
     try {
-      const priceValue = item.original?.price || 
-                       (item.price && item.price.match && item.price.match(/\d+/) ? item.price.replace(/\D/g, '') : 0) ||
-                       item.estimatedCost || 
-                       item.cost ||
-                       0;
-      
+      const priceValue =
+        item.original?.price ||
+        (item.price && item.price.match && item.price.match(/\d+/)
+          ? item.price.replace(/\D/g, "")
+          : 0) ||
+        item.estimatedCost ||
+        item.cost ||
+        0;
+
       return parsePrice(priceValue);
     } catch (error) {
-      console.error('Error parsing price:', error);
       return 0;
     }
   };
@@ -163,43 +196,47 @@ const SaveRundownModel = ({
   // Validate form
   const validateForm = () => {
     const errors = [];
-    
+
     try {
       if (!title.trim()) {
-        errors.push('Judul rundown harus diisi');
+        errors.push("Judul rundown harus diisi");
       }
-      
       if (title.length > 100) {
-        errors.push('Judul rundown maksimal 100 karakter');
+        errors.push("Judul rundown maksimal 100 karakter");
       }
-      
       if (description.length > 500) {
-        errors.push('Deskripsi maksimal 500 karakter');
+        errors.push("Deskripsi maksimal 500 karakter");
       }
-      
-      const currentData = processedRundownData || rundownData;
+      const currentData = processedRundownData;
       if (!currentData) {
-        errors.push('Data rundown tidak tersedia');
+        errors.push("Data rundown tidak tersedia");
       } else if (!currentData.itinerary) {
-        errors.push('Data itinerary tidak tersedia');
+        errors.push("Data itinerary tidak tersedia");
       } else if (!Array.isArray(currentData.itinerary)) {
-        errors.push('Format itinerary tidak valid');
+        errors.push("Format itinerary tidak valid");
       } else if (currentData.itinerary.length === 0) {
-        errors.push('Rundown harus memiliki minimal 1 destinasi');
+        errors.push("Rundown harus memiliki minimal 1 destinasi");
       } else {
         const invalidItems = currentData.itinerary.filter((item, index) => {
-          return !item || (!item.label && !item.activity && !item.name && !item.destinationName);
+          return (
+            !item ||
+            (!item.label &&
+              !item.activity &&
+              !item.name &&
+              !item.destinationName)
+          );
         });
-        
+
         if (invalidItems.length > 0) {
-          errors.push(`Terdapat ${invalidItems.length} destinasi yang tidak valid`);
+          errors.push(
+            `Terdapat ${invalidItems.length} destinasi yang tidak valid`
+          );
         }
       }
     } catch (error) {
-      console.error('Error in validation:', error);
-      errors.push('Terjadi kesalahan saat validasi data');
+      errors.push("Terjadi kesalahan saat validasi data");
     }
-    
+
     setValidationErrors(errors);
     return errors.length === 0;
   };
@@ -207,94 +244,102 @@ const SaveRundownModel = ({
   // Handle save with data normalization
   const handleSave = async () => {
     if (!validateForm()) return;
-    
+
     try {
-      const currentData = processedRundownData || rundownData;
-      
-      const normalizedItinerary = currentData.itinerary.map((item, index) => {
-        if (!item) {
-          console.warn(`Item at index ${index} is undefined/null`);
-          return null;
-        }
+      const currentData = processedRundownData;
 
-        try {
-          return {
-            ...item,
-            destinationName: getDestinationDisplayName(item, index),
-            activity: getDestinationDisplayName(item, index),
-            name: getDestinationDisplayName(item, index),
-            location: getDestinationLocation(item),
-            category: getDestinationCategory(item),
-            estimatedCost: getDestinationPrice(item),
-            originalData: item,
-            order: item.order || index + 1
-          };
-        } catch (error) {
-          console.error(`Error normalizing item at index ${index}:`, error, item);
-          return {
-            ...item,
-            destinationName: `Destinasi ${index + 1}`,
-            activity: `Destinasi ${index + 1}`,
-            name: `Destinasi ${index + 1}`,
-            location: '',
-            category: 'General',
-            estimatedCost: 0,
-            originalData: item,
-            order: index + 1
-          };
-        }
-      }).filter(item => item !== null);
+      const normalizedItinerary = currentData.itinerary
+        .map((item, index) => {
+          if (!item) {
+            console.warn(`Item at index ${index} is undefined/null`);
+            return null;
+          }
 
-      // Calculate budget estimation using the exact same logic as YourTripPopup
-      const budgetEstimation = currentData.budgetEstimation? currentData.budgetEstimation: calculateBudgetEstimation(normalizedItinerary);
+          try {
+            return {
+              ...item,
+              destinationName: getDestinationDisplayName(item, index),
+              activity: getDestinationDisplayName(item, index),
+              name: getDestinationDisplayName(item, index),
+              location: getDestinationLocation(item),
+              category: getDestinationCategory(item),
+              estimatedCost: getDestinationPrice(item),
+              originalData: item,
+              order: item.order || index + 1,
+              time: item.time || `${(9 + index * 2).toString().padStart(2, '0')}:00`,
+              duration: item.duration || "2 jam",
+              notes: item.notes || `Kunjungi ${getDestinationDisplayName(item, index)}`,
+              price: item.price || "Free",
+            };
+          } catch (error) {
+            return {
+              ...item,
+              destinationName: `Destinasi ${index + 1}`,
+              activity: `Destinasi ${index + 1}`,
+              name: `Destinasi ${index + 1}`,
+              location: "",
+              category: "General",
+              estimatedCost: 0,
+              originalData: item,
+              order: index + 1,
+              time: `${(9 + index * 2).toString().padStart(2, '0')}:00`,
+              duration: "2 jam",
+              notes: `Kunjungi destinasi ${index + 1}`,
+              price: "Free",
+            };
+          }
+        })
+        .filter((item) => item !== null);
 
+      const budgetEstimation = currentData.budgetEstimation
+        ? currentData.budgetEstimation
+        : calculateBudgetEstimation(normalizedItinerary);
 
       const formattedData = {
         ...currentData,
         itinerary: normalizedItinerary,
         title: title.trim(),
         description: description.trim(),
-        tags: tags.split(',').map(tag => tag.trim()).filter(tag => tag),
+        tags: tags
+          .split(",")
+          .map((tag) => tag.trim())
+          .filter((tag) => tag),
         tripType,
         budgetEstimation: budgetEstimation,
-        dataSource: selectedrundown ? 'manual' : 'generated',
-        totalDestinations: normalizedItinerary.length
+        dataSource: currentData.dataSource || (selectedrundown ? "manual" : "generated"),
+        totalDestinations: normalizedItinerary.length,
+        createdFrom: rundownData ? "generated_rundown" : "manual_selection",
+        originalSelectedDestinations: selectedrundown || [],
       };
-      
-      console.log('Formatted data before save:', formattedData);
-      
+
       const docId = await saveRundown(formattedData, title.trim());
-      
+
       if (onSaveSuccess) {
         onSaveSuccess(docId);
       }
-      
       onClose();
     } catch (err) {
-      console.error('Save failed:', err);
+      console.error("Save failed:", err);
     }
   };
 
-  // Calculate stats with improved data handling
-  const currentData = processedRundownData || rundownData;
+  const currentData = processedRundownData;
   const totalDestinations = currentData?.itinerary?.length || 0;
-  console.log("Current Dataa", currentData); //debugg
-  // Use the exact same budget estimation logic as YourTripPopup
+
   const estimatedCost = currentData?.budgetEstimation
     ? currentData?.budgetEstimation
-    : calculateBudgetEstimation(currentData.itinerary) ;
+    : calculateBudgetEstimation(currentData?.itinerary || []);
 
-  // Generate preview text
   const generatePreview = () => {
     if (!currentData?.itinerary || currentData.itinerary.length === 0) {
-      return 'Tidak ada destinasi';
+      return "Tidak ada destinasi";
     }
 
-    const firstFew = currentData.itinerary.slice(0, 3).map((item, index) => 
-      getDestinationDisplayName(item, index)
-    );
-    
-    const preview = firstFew.join(', ');
+    const firstFew = currentData.itinerary
+      .slice(0, 3)
+      .map((item, index) => getDestinationDisplayName(item, index));
+
+    const preview = firstFew.join(", ");
     return currentData.itinerary.length > 3 ? `${preview}...` : preview;
   };
 
@@ -322,7 +367,9 @@ const SaveRundownModel = ({
           {/* Rundown Preview */}
           {currentData && (
             <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <h3 className="font-semibold text-blue-800 mb-3">Preview Rundown</h3>
+              <h3 className="font-semibold text-blue-800 mb-3">
+                Preview Rundown
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                 <div className="flex items-center text-blue-700">
                   <MapPin size={16} className="mr-2" />
@@ -334,12 +381,18 @@ const SaveRundownModel = ({
                 </div>
                 <div className="flex items-center text-blue-700">
                   <Calendar size={16} className="mr-2" />
-                  <span>{currentData.estimatedDuration || '1 hari'}</span>
+                  <span>{currentData.estimatedDuration || "1 hari"}</span>
                 </div>
               </div>
               <p className="text-blue-600 text-sm mt-2 italic">
                 {generatePreview()}
               </p>
+              {/* Show data source */}
+              <div className="mt-2 text-xs text-blue-500">
+                {currentData.dataSource === "manual" || selectedrundown
+                  ? "📝 Dibuat dari destinasi yang dipilih manual"
+                  : "🤖 Dibuat dari generator otomatis"}
+              </div>
             </div>
           )}
 
@@ -424,7 +477,9 @@ const SaveRundownModel = ({
           {/* Validation Errors */}
           {validationErrors.length > 0 && (
             <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <h4 className="text-red-800 font-medium mb-2">Terdapat kesalahan:</h4>
+              <h4 className="text-red-800 font-medium mb-2">
+                Terdapat kesalahan:
+              </h4>
               <ul className="text-red-700 text-sm space-y-1">
                 {validationErrors.map((error, index) => (
                   <li key={index}>• {error}</li>
@@ -440,16 +495,23 @@ const SaveRundownModel = ({
             </div>
           )}
 
-          {/* Itinerary Preview - Enhanced */}
+          {/* Itinerary Preview */}
           {currentData?.itinerary && currentData.itinerary.length > 0 && (
             <div className="mt-6">
-              <h4 className="font-medium text-gray-800 mb-3">Destinasi dalam Rundown:</h4>
+              <h4 className="font-medium text-gray-800 mb-3">
+                Destinasi dalam Rundown:
+              </h4>
               <div className="max-h-40 overflow-y-auto space-y-2">
                 {currentData.itinerary.map((item, index) => {
                   if (!item) {
                     return (
-                      <div key={index} className="flex items-center p-2 bg-red-50 rounded">
-                        <span className="text-red-600 text-xs">Item {index + 1} is undefined</span>
+                      <div
+                        key={index}
+                        className="flex items-center p-2 bg-red-50 rounded"
+                      >
+                        <span className="text-red-600 text-xs">
+                          Item {index + 1} is undefined
+                        </span>
                       </div>
                     );
                   }
@@ -459,17 +521,29 @@ const SaveRundownModel = ({
                     const location = getDestinationLocation(item);
                     const category = getDestinationCategory(item);
                     const price = getDestinationPrice(item);
-                    
+
                     return (
-                      <div key={index} className="flex items-center p-2 bg-gray-50 rounded">
+                      <div
+                        key={index}
+                        className="flex items-center p-2 bg-gray-50 rounded"
+                      >
                         <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full mr-3 flex-shrink-0">
                           {index + 1}
                         </span>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium truncate">{displayName}</p>
+                          <p className="text-sm font-medium truncate">
+                            {displayName}
+                          </p>
                           <div className="flex items-center gap-2 text-xs text-gray-500">
-                            <span className="bg-gray-200 px-2 py-1 rounded">{category}</span>
+                            <span className="bg-gray-200 px-2 py-1 rounded">
+                              {category}
+                            </span>
                             {location && <span>{location}</span>}
+                            {item.time && (
+                              <span className="text-blue-600 font-medium">
+                                {item.time}
+                              </span>
+                            )}
                           </div>
                         </div>
                         {price > 0 && (
@@ -485,10 +559,14 @@ const SaveRundownModel = ({
                       </div>
                     );
                   } catch (error) {
-                    console.error(`Error rendering item ${index}:`, error);
                     return (
-                      <div key={index} className="flex items-center p-2 bg-red-50 rounded">
-                        <span className="text-red-600 text-xs">Error rendering item {index + 1}</span>
+                      <div
+                        key={index}
+                        className="flex items-center p-2 bg-red-50 rounded"
+                      >
+                        <span className="text-red-600 text-xs">
+                          Error rendering item {index + 1}
+                        </span>
                       </div>
                     );
                   }
