@@ -311,9 +311,6 @@ const handleViewRundown = (rundown) => {
               <div className="bg-gradient-to-r from-blue-500 to-cyan-500 px-6 py-8">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <div className="bg-white bg-opacity-20 rounded-full p-4">
-                      <User size={40} className="text-white" />
-                    </div>
                     <div className="ml-6 text-white">
                       <h2 className="text-2xl font-bold">
                         {userProfile?.username || 'User'}
