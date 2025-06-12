@@ -16,6 +16,7 @@ const YourTripPopup = () => {
   const [error, setError] = useState(null);
   const [popupSize, setPopupSize] = useState("normal");
   const [animateRundown, setAnimateRundown] = useState(false);
+  const [hasNewRundown, setHasNewRundown] = useState(false); // New state for rundown notification
   const popupRef = useRef(null);
 
   // Authentication and Save Modal States
@@ -58,6 +59,7 @@ const YourTripPopup = () => {
       const newRundown = e.detail.rundown;
       setGeneratedRundown(newRundown);
       setIsSaved(false);
+      setHasNewRundown(true); // Set notification when rundown is generated
     };
 
     document.addEventListener("rundownGenerated", handleRundownGenerated);
@@ -73,6 +75,7 @@ const YourTripPopup = () => {
       const { docId, title } = e.detail;
       setIsSaved(true);
       setSaveError(null);
+      setHasNewRundown(false); // Clear notification when saved
 
       setTimeout(() => {
         setIsSaved(false);
@@ -289,6 +292,7 @@ const YourTripPopup = () => {
     console.log("Final rundown:", validatedRundown);
     setGeneratedRundown(validatedRundown);
     setIsSaved(false);
+    setHasNewRundown(true); // Set notification badge
     localStorage.setItem("generatedRundown", JSON.stringify(validatedRundown));
   };
 
@@ -297,6 +301,7 @@ const YourTripPopup = () => {
     setIsSaved(true);
     setSaveError(null);
     setShowSaveModal(false);
+    setHasNewRundown(false); // Clear notification badge when saved
 
     localStorage.removeItem("generatedRundown");
 
@@ -323,6 +328,7 @@ const YourTripPopup = () => {
     if (selectedDestinations.length <= 1) {
       setGeneratedRundown(null);
       localStorage.removeItem("generatedRundown");
+      setHasNewRundown(false); // Clear notification if no destinations left
     }
 
     const updatedTrip = selectedDestinations.filter((dest) => dest.id !== id);
@@ -340,6 +346,7 @@ const YourTripPopup = () => {
     setSelectedDestinations([]);
     setGeneratedRundown(null);
     setIsSaved(false);
+    setHasNewRundown(false); // Clear notification when trip is cleared
     localStorage.removeItem("yourTrip");
     localStorage.removeItem("generatedRundown");
 
@@ -470,16 +477,37 @@ const YourTripPopup = () => {
 
   return (
     <>
-      {/* Floating Button with notification badge */}
+      {/* Floating Button with notification badges */}
       <button
-        onClick={() => setIsPopupOpen(!isPopupOpen)}
+        onClick={() => {
+          setIsPopupOpen(!isPopupOpen);
+          setHasNewRundown(false); // Clear notification when popup is opened
+        }}
         className="fixed bottom-8 right-8 bg-white border border-blue-500 text-blue-500 font-semibold py-2 px-4 rounded-full shadow-lg hover:bg-blue-100 transition-all duration-500 z-[999]"
         style={{ position: "fixed", bottom: "32px", right: "32px" }}
       >
         Your trip
+        {/* Destination count badge */}
         {selectedDestinations.length > 0 && (
           <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full animate-pulse">
             {selectedDestinations.length}
+          </span>
+        )}
+        {/* Rundown notification badge */}
+        {hasNewRundown && (
+          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full animate-pulse">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-3 w-3"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z"
+                clipRule="evenodd"
+              />
+            </svg>
           </span>
         )}
       </button>
@@ -597,7 +625,7 @@ const YourTripPopup = () => {
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  >
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -652,6 +680,7 @@ const YourTripPopup = () => {
                       onClick={() => {
                         setGeneratedRundown(null);
                         setIsSaved(false);
+                        setHasNewRundown(false); // Clear notification when reset
                         localStorage.removeItem("generatedRundown");
                       }}
                       className="flex items-center gap-1 px-3 py-1.5 bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-red-500 text-xs font-medium rounded-md transition-colors"
