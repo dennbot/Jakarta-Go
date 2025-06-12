@@ -264,7 +264,6 @@ const RundownDetailPage = () => {
                       <div className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3">
                         {day.dayNumber || dayIndex + 1}
                       </div>
-                      <h3 className="font-medium">Hari {day.dayNumber || dayIndex + 1}</h3>
                     </div>
                     
                     {day.destinations?.length > 0 ? (
