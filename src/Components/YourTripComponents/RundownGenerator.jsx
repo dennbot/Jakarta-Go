@@ -38,11 +38,11 @@ const RundownGenerator = ({ isOpen, onClose, onGenerateRundown, selectedDestinat
 
   // Geographic areas mapping for Jakarta
   const JAKARTA_AREAS = {
-    'PUSAT': ['Jakarta Pusat', 'Pusat', 'Central Jakarta', 'Menteng', 'Gambir', 'Tanah Abang', 'Kemayoran', 'Sawah Besar', 'Cempaka Putih'],
-    'UTARA': ['Jakarta Utara', 'Utara', 'North Jakarta', 'Ancol', 'Kelapa Gading', 'Sunter', 'Tanjung Priok', 'Penjaringan', 'Pademangan'],
-    'BARAT': ['Jakarta Barat', 'Barat', 'West Jakarta', 'Grogol', 'Cengkareng', 'Kalideres', 'Kebon Jeruk', 'Kembangan', 'Palmerah', 'Taman Sari', 'Tambora'],
-    'SELATAN': ['Jakarta Selatan', 'Selatan', 'South Jakarta', 'Kebayoran', 'Cilandak', 'Jagakarsa', 'Mampang', 'Pancoran', 'Pasar Minggu', 'Pesanggrahan', 'Setiabudi', 'Tebet'],
-    'TIMUR': ['Jakarta Timur', 'Timur', 'East Jakarta', 'Cakung', 'Cipayung', 'Ciracas', 'Duren Sawit', 'Jatinegara', 'Kramat Jati', 'Makasar', 'Matraman', 'Pasar Rebo', 'Pulogadung']
+    'Jakarta Pusat': ['Jakarta Pusat', 'Pusat', 'Central Jakarta', 'Menteng', 'Gambir', 'Tanah Abang', 'Kemayoran', 'Sawah Besar', 'Cempaka Putih'],
+    'Jakarta Utara': ['Jakarta Utara', 'Utara', 'North Jakarta', 'Ancol', 'Kelapa Gading', 'Sunter', 'Tanjung Priok', 'Penjaringan', 'Pademangan'],
+    'Jakarta Barat': ['Jakarta Barat', 'Barat', 'West Jakarta', 'Grogol', 'Cengkareng', 'Kalideres', 'Kebon Jeruk', 'Kembangan', 'Palmerah', 'Taman Sari', 'Tambora'],
+    'Jakarta Selatan': ['Jakarta Selatan', 'Selatan', 'South Jakarta', 'Kebayoran', 'Cilandak', 'Jagakarsa', 'Mampang', 'Pancoran', 'Pasar Minggu', 'Pesanggrahan', 'Setiabudi', 'Tebet'],
+    'Jakarta Timur': ['Jakarta Timur', 'Timur', 'East Jakarta', 'Cakung', 'Cipayung', 'Ciracas', 'Duren Sawit', 'Jatinegara', 'Kramat Jati', 'Makasar', 'Matraman', 'Pasar Rebo', 'Pulogadung']
   };
 
   // Function to determine area from location string
@@ -68,12 +68,12 @@ const RundownGenerator = ({ isOpen, onClose, onGenerateRundown, selectedDestinat
     
     // Distance matrix berdasaarrkan daerah jakarta
     const distances = {
-      'PUSAT': { 'PUSAT': 0, 'UTARA': 1, 'BARAT': 2, 'SELATAN': 2, 'TIMUR': 2, 'UNKNOWN': 1 },
-      'UTARA': { 'PUSAT': 1, 'UTARA': 0, 'BARAT': 2, 'SELATAN': 3, 'TIMUR': 2, 'UNKNOWN': 1 },
-      'BARAT': { 'PUSAT': 2, 'UTARA': 2, 'BARAT': 0, 'SELATAN': 2, 'TIMUR': 4, 'UNKNOWN': 2 },
-      'SELATAN': { 'PUSAT': 2, 'UTARA': 3, 'BARAT': 2, 'SELATAN': 0, 'TIMUR': 2, 'UNKNOWN': 2 },
-      'TIMUR': { 'PUSAT': 2, 'UTARA': 2, 'BARAT': 4, 'SELATAN': 2, 'TIMUR': 0, 'UNKNOWN': 2 },
-      'UNKNOWN': { 'PUSAT': 1, 'UTARA': 1, 'BARAT': 2, 'SELATAN': 2, 'TIMUR': 2, 'UNKNOWN': 0 }
+      'Jakarta Pusat': { 'Jakarta Pusat': 0, 'Jakarta Utara': 1, 'Jakarta Barat': 2, 'Jakarta Selatan': 2, 'Jakarta Timur': 2, 'UNKNOWN': 1 },
+      'Jakarta Utara': { 'Jakarta Pusat': 1, 'Jakarta Utara': 0, 'Jakarta Barat': 2, 'Jakarta Selatan': 3, 'Jakarta Timur': 2, 'UNKNOWN': 1 },
+      'Jakarta Barat': { 'Jakarta Pusat': 2, 'Jakarta Utara': 2, 'Jakarta Barat': 0, 'Jakarta Selatan': 2, 'Jakarta Timur': 4, 'UNKNOWN': 2 },
+      'Jakarta Selatan': { 'Jakarta Pusat': 2, 'Jakarta Utara': 3, 'Jakarta Barat': 2, 'Jakarta Selatan': 0, 'Jakarta Timur': 2, 'UNKNOWN': 2 },
+      'Jakarta Timur': { 'Jakarta Pusat': 2, 'Jakarta Utara': 2, 'Jakarta Barat': 4, 'Jakarta Selatan': 2, 'Jakarta Timur': 0, 'UNKNOWN': 2 },
+      'UNKNOWN': { 'Jakarta Pusat': 1, 'Jakarta Utara': 1, 'Jakarta Barat': 2, 'Jakarta Selatan': 2, 'Jakarta Timur': 2, 'UNKNOWN': 0 }
     };
     
     return distances[area1]?.[area2] || 3;
@@ -732,7 +732,7 @@ const RundownGenerator = ({ isOpen, onClose, onGenerateRundown, selectedDestinat
           // If no culinary place found in allDestinations, create a dummy one
           destinationsForTrip.push({
             id: 'dummy-culinary',
-            label: 'Restoran Lokal',
+            label: 'Tempat Makan lokal',
             price: 'Rp 15000',
             category: 'Kuliner',
             location: 'Jakarta Pusat'
@@ -780,8 +780,8 @@ const RundownGenerator = ({ isOpen, onClose, onGenerateRundown, selectedDestinat
       // GEOGRAPHIC OPTIMIZATION: Apply route optimization based on location
       let optimizedDestinations = [];
       
-      // Determine starting area from selected destinations or use PUSAT as default
-      let startingArea = 'PUSAT';
+      // Determine starting area from selected destinations or use Jakarta Pusat as default
+      let startingArea = 'Jakarta Pusat';
       if (selectedDestinations.length > 0) {
         const firstDestArea = getAreaFromLocation(selectedDestinations[0].location || selectedDestinations[0].original?.location);
         if (firstDestArea !== 'UNKNOWN') {
@@ -986,24 +986,24 @@ const RundownGenerator = ({ isOpen, onClose, onGenerateRundown, selectedDestinat
       
       console.log(`Added ${morningActivitiesAdded} morning activities`);
       
-      // If we're too early for lunch, add buffer time or a short coffee break
+      // If we're too early for lunch, add buffer time or a short Istirahat Jajan
       if (currentTimeMinutes < idealLunchStartMinutes - 30) {
-        // Add a coffee break if it's not right after breakfast
+        // Add a Istirahat Jajan if it's not right after breakfast
         if (currentTimeMinutes > (startHours * 60 + startMinutes + 120)) {
           itinerary.push({
             time: formatTime(currentHour, currentMinute),
-            activity: '☕ Coffee Break',
+            activity: '☕ Istirahat Jajan',
             duration: '30 menit',
-            notes: 'Istirahat sejenak dengan kopi/teh sebelum makan siang',
+            notes: 'Istirahat sejenak dengan kopi/teh sebelum Istirahat Makan',
             price: 'Rp 15.000 - 30.000',
             location: currentDestination?.location || 'Jakarta',
-            area: currentDestination?.area || 'PUSAT'
+            area: currentDestination?.area || 'Jakarta Pusat'
           });
           
           [currentHour, currentMinute] = addTime(currentHour, currentMinute, 0, 30);
           currentTimeMinutes = currentHour * 60 + currentMinute;
           
-          console.log(`Added coffee break at ${formatTime(currentHour, currentMinute)}`);
+          console.log(`Added Istirahat Jajan at ${formatTime(currentHour, currentMinute)}`);
           
           // Buffer time to get closer to lunch
           const bufferMinutes = Math.min(idealLunchStartMinutes - currentTimeMinutes, 45);
@@ -1056,10 +1056,10 @@ const RundownGenerator = ({ isOpen, onClose, onGenerateRundown, selectedDestinat
         itinerary.push({
           time: formatTime(currentHour, currentMinute),
           activity: lunchPlace 
-            ? `🍜 Makan Siang - ${lunchPlace.label}` 
-            : '🍜 Makan Siang di Restoran Lokal',
+            ? `🍜 Istirahat Makan - ${lunchPlace.label}` 
+            : '🍜 Istirahat Makan',
           duration: `${mealDuration} menit`,
-          notes: `Istirahat makan siang untuk mengisi energi di ${lunchArea}${transportTime > 0 ? ` (${transportTime} menit perjalanan)` : ''}`,
+          notes: `Istirahat Istirahat Makan untuk mengisi energi di ${lunchArea}${transportTime > 0 ? ` (${transportTime} menit perjalanan)` : ''}`,
           price: lunchPlace?.price || 'Rp 25.000 - 50.000',
           location: lunchLocation,
           area: lunchArea
@@ -1092,8 +1092,8 @@ const RundownGenerator = ({ isOpen, onClose, onGenerateRundown, selectedDestinat
         itinerary.push({
           time: formatTime(currentHour, currentMinute),
           activity: lunchPlace 
-            ? `🍜 Makan Siang - ${lunchPlace.label}` 
-            : '🍜 Makan Siang di Restoran Lokal',
+            ? `🍜 Istirahat Makan - ${lunchPlace.label}` 
+            : '🍜 Istirahat Makan',
           duration: `${mealDuration} menit`,
           notes: `Istirahat untuk makan dan mengisi energi di ${lunchArea}${transportTime > 0 ? ` (${transportTime} menit perjalanan)` : ''}`,
           price: lunchPlace?.price || 'Rp 25.000 - 50.000',
@@ -1170,25 +1170,25 @@ const RundownGenerator = ({ isOpen, onClose, onGenerateRundown, selectedDestinat
       
       console.log(`Added ${afternoonActivitiesAdded} afternoon activities`);
       
-      // Add coffee break in the afternoon if time permits and we haven't added one yet
+      // Add Istirahat Jajan in the afternoon if time permits and we haven't added one yet
       if (currentTimeMinutes < idealDinnerStartMinutes - 45 && 
           currentTimeMinutes > 15 * 60 && // After 3 PM
           !itinerary.some(item => item.activity.includes('Coffee'))) {
         
         itinerary.push({
           time: formatTime(currentHour, currentMinute),
-          activity: '☕ Coffee Break',
+          activity: '☕ Istirahat Jajan',
           duration: '30 menit',
           notes: 'Nikmati kopi/teh sore hari',
           price: 'Rp 15.000 - 30.000',
           location: currentDestination?.location || 'Jakarta',
-          area: currentDestination?.area || 'PUSAT'
+          area: currentDestination?.area || 'Jakarta Pusat'
         });
         
         [currentHour, currentMinute] = addTime(currentHour, currentMinute, 0, 30);
         currentTimeMinutes = currentHour * 60 + currentMinute;
         
-        console.log(`Added afternoon coffee break at ${formatTime(currentHour, currentMinute)}`);
+        console.log(`Added afternoon Istirahat Jajan at ${formatTime(currentHour, currentMinute)}`);
       }
       
       // Evening activity if there's time before dinner
@@ -1268,7 +1268,7 @@ const RundownGenerator = ({ isOpen, onClose, onGenerateRundown, selectedDestinat
           // Try to find a culinary place in the same area first
           dinnerPlace = culinaryPlaces.find(place => 
             !usedDestinations.has(place.id) &&
-            place.id !== itinerary.find(item => item.activity.includes('Makan Siang'))?.placeId &&
+            place.id !== itinerary.find(item => item.activity.includes('Istirahat Makan'))?.placeId &&
             getAreaFromLocation(place.location || place.original?.location) === currentDestination.area
           );
         }
@@ -1277,7 +1277,7 @@ const RundownGenerator = ({ isOpen, onClose, onGenerateRundown, selectedDestinat
         if (!dinnerPlace) {
           dinnerPlace = culinaryPlaces.find(place => 
             !usedDestinations.has(place.id) &&
-            place.id !== itinerary.find(item => item.activity.includes('Makan Siang'))?.placeId
+            place.id !== itinerary.find(item => item.activity.includes('Istirahat Makan'))?.placeId
           );
         }
         
@@ -1317,7 +1317,7 @@ const RundownGenerator = ({ isOpen, onClose, onGenerateRundown, selectedDestinat
         // If we're outside of dinner time but have time before the end, still add dinner
         const dinnerPlace = culinaryPlaces.find(place => 
           !usedDestinations.has(place.id) &&
-          place.id !== itinerary.find(item => item.activity.includes('Makan Siang'))?.placeId
+          place.id !== itinerary.find(item => item.activity.includes('Istirahat Makan'))?.placeId
         );
         
         const dinnerLocation = dinnerPlace?.location || dinnerPlace?.original?.location || currentDestination?.location || 'Jakarta Pusat';
@@ -1415,19 +1415,19 @@ const RundownGenerator = ({ isOpen, onClose, onGenerateRundown, selectedDestinat
           notes: 'Mulai hari dengan menjelajahi museum di Jakarta Pusat',
           price: 'Rp 20.000 - 50.000',
           location: 'Jakarta Pusat',
-          area: 'PUSAT'
+          area: 'Jakarta Pusat'
         });
         
         // Add lunch
         const lunchHour = Math.min(startHours + 3, 13);
         itinerary.push({
           time: formatTime(lunchHour, 0),
-          activity: '🍜 Makan Siang di Restoran Lokal',
+          activity: '🍜 Istirahat Makan',
           duration: '1 jam',
-          notes: 'Istirahat makan siang dan mencicipi kuliner lokal di Jakarta Pusat',
+          notes: 'Istirahat  Makan dan mencicipi kuliner lokal di Jakarta Pusat',
           price: 'Rp 25.000 - 50.000',
           location: 'Jakarta Pusat',
-          area: 'PUSAT'
+          area: 'Jakarta Pusat'
         });
         
         // Add afternoon activity
@@ -1438,7 +1438,7 @@ const RundownGenerator = ({ isOpen, onClose, onGenerateRundown, selectedDestinat
           notes: 'Jelajahi pusat perbelanjaan atau pasar tradisional di Jakarta Pusat',
           price: 'Varies',
           location: 'Jakarta Pusat',
-          area: 'PUSAT'
+          area: 'Jakarta Pusat'
         });
         
         // Add dinner
@@ -1449,7 +1449,7 @@ const RundownGenerator = ({ isOpen, onClose, onGenerateRundown, selectedDestinat
           notes: 'Nikmati makan malam untuk mengakhiri trip di Jakarta Pusat',
           price: 'Rp 35.000 - 75.000',
           location: 'Jakarta Pusat',
-          area: 'PUSAT'
+          area: 'Jakarta Pusat'
         });
       }
       
@@ -1469,7 +1469,7 @@ const RundownGenerator = ({ isOpen, onClose, onGenerateRundown, selectedDestinat
           notes: 'Luangkan waktu untuk belanja oleh-oleh atau bersantai',
           price: 'Varies',
           location: lastActivity.location || 'Jakarta Pusat',
-          area: lastActivity.area || 'PUSAT'
+          area: lastActivity.area || 'Jakarta Pusat'
         });
       }
       
@@ -1581,9 +1581,9 @@ const RundownGenerator = ({ isOpen, onClose, onGenerateRundown, selectedDestinat
       
       // Meal costs if not included in destinations
       const breakfastCount = itinerary.filter(item => item.activity.includes('Sarapan') && !item.activity.includes('-')).length;
-      const lunchCount = itinerary.filter(item => item.activity.includes('Makan Siang') && !item.activity.includes('-')).length;
+      const lunchCount = itinerary.filter(item => item.activity.includes('Istirahat Makan') && !item.activity.includes('-')).length;
       const dinnerCount = itinerary.filter(item => item.activity.includes('Makan Malam') && !item.activity.includes('-')).length;
-      const coffeeCount = itinerary.filter(item => item.activity.includes('Coffee Break')).length;
+      const coffeeCount = itinerary.filter(item => item.activity.includes('Istirahat Jajan')).length;
       
       // Add budget for meals not at specific destinations
       if (preferences.mealPreference === 'local') {
