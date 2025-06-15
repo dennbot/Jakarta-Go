@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Navbar2 from '../Components/Navbar2';
+import Navbar from '../Components/Navbar';
 import Footer from '../Components/Footer';
 import DestinationCarousel from '../Components/DestinationCarousel';
 import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
@@ -127,7 +127,7 @@ function Home() {
 
   return (
     <>
-      <Navbar2
+      <Navbar
         isLoggedIn={isLoggedIn}
         username={username}
         handleLogout={handleLogout}
