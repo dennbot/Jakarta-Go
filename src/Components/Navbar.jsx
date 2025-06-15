@@ -24,7 +24,7 @@ const Navbar = ({
   const dropdownRef = useRef(null);
   const buttonRef = useRef(null);
 
-  //  Fetch kategori dari Firestore
+  // Fetch kategori dari Firestore
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -49,7 +49,7 @@ const Navbar = ({
     fetchCategories();
   }, []);
 
-  // ✅ Load saved trip dari localStorage
+  // Load saved trip dari localStorage
   useEffect(() => {
     const loadSavedTrip = () => {
       try {
@@ -70,14 +70,14 @@ const Navbar = ({
     return () => document.removeEventListener('tripUpdated', handleTripUpdate);
   }, []);
 
-  // ✅ Sticky scroll background
+  // Sticky scroll background
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // ✅ Close dropdown saat klik di luar
+  // Close dropdown saat klik di luar
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -100,13 +100,13 @@ const Navbar = ({
   const openRundownGenerator = () => setIsRundownGeneratorOpen(true);
   const closeRundownGenerator = () => setIsRundownGeneratorOpen(false);
 
-  // ✅ Handler untuk navigasi ke profile page
+  // Handler untuk navigasi ke profile page
   const handleProfileClick = () => {
     navigate('/profile');
-    setIsMobileMenuOpen(false); // Close mobile menu jika open
+    setIsMobileMenuOpen(false);
   };
 
-  // ✅ Custom logout handler
+  // Custom logout handler
   const handleCustomLogout = () => {
     localStorage.removeItem('currentUserId');
     localStorage.removeItem('generatedRundown');
@@ -142,7 +142,7 @@ const Navbar = ({
 
   return (
     <>
-      <header className={`fixed w-full z-50 transition-all bg-black md:bg-transparent ${isScrolled ? "md:bg-yellow-200 md:shadow-md md:backdrop-blur-md" : ""}`}>
+      <header className={`fixed top-0 left-0 right-0 w-full z-50 transition-all duration-300 ${isScrolled ? "bg-yellow-200 shadow-md" : "bg-transparent"}`}>
         <nav className="flex items-center justify-between px-6 md:px-36 py-4 md:py-8 transition-all">
           <a href="/" className={clsx(
             "text-2xl font-medium border-b-4 border-transparent hover:border-cyan-300 transition-all",
