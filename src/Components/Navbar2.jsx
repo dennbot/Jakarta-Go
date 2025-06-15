@@ -106,9 +106,9 @@ const Navbar2 = ({
   };
 
   return (
-    <header className={`fixed top-0 left-0 right-0 w-full z-50 transition-all duration-300 ${isScrolled ? "bg-yellow-200 shadow-md" : "bg-transparent"}`}>
+    <header className={`fixed top-0 left-0 right-0 w-full z-50 transition-all duration-300 ${isScrolled ? "bg-yellow-200 shadow-md" : "bg-white"}`}>
       <nav className="flex items-center justify-between px-6 md:px-36 py-4 md:py-6">
-        <a href="/" className={`text-2xl font-medium border-b-4 border-transparent hover:border-cyan-300 transition-all ${isScrolled ? "text-black" : "text-white"}`}>
+        <a href="/" className="text-2xl font-medium text-black border-b-4 border-transparent hover:border-cyan-300 transition-all">
           Jakarta-GO
         </a>
 
@@ -117,14 +117,14 @@ const Navbar2 = ({
           className="md:hidden flex flex-col justify-center items-center w-8 h-8 relative z-50"
           aria-label="Toggle Menu"
         >
-          <span className={`absolute h-0.5 w-6 transform transition duration-300 ease-in-out origin-center ${isScrolled ? "bg-black" : "bg-white"} ${isMobileMenuOpen ? "rotate-45" : "-translate-y-2"}`} />
-          <span className={`absolute h-0.5 w-6 transition-opacity duration-300 ease-in-out ${isScrolled ? "bg-black" : "bg-white"} ${isMobileMenuOpen ? "opacity-0" : "opacity-100"}`} />
-          <span className={`absolute h-0.5 w-6 transform transition duration-300 ease-in-out origin-center ${isScrolled ? "bg-black" : "bg-white"} ${isMobileMenuOpen ? "rotate-45" : "translate-y-2"}`} />
+          <span className={`absolute h-0.5 w-6 bg-black transform transition duration-300 ease-in-out origin-center ${isMobileMenuOpen ? "rotate-45" : "-translate-y-2"}`} />
+          <span className={`absolute h-0.5 w-6 bg-black transition-opacity duration-300 ease-in-out ${isMobileMenuOpen ? "opacity-0" : "opacity-100"}`} />
+          <span className={`absolute h-0.5 w-6 bg-black transform transition duration-300 ease-in-out origin-center ${isMobileMenuOpen ? "-rotate-45" : "translate-y-2"}`} />
         </button>
 
-        <ul className={`absolute md:static top-full left-0 w-full md:w-auto ${isScrolled ? "bg-white" : "bg-white"} md:bg-transparent flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-12 px-6 md:px-0 py-4 md:py-0 transition-all duration-300 z-40 ${isMobileMenuOpen ? "block" : "hidden md:flex"}`}>
+        <ul className={`absolute md:static top-full left-0 w-full md:w-auto bg-white md:bg-transparent flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-12 px-6 md:px-0 py-4 md:py-0 transition-all duration-300 z-40 ${isMobileMenuOpen ? "block" : "hidden md:flex"}`}>
           <li>
-            <button onClick={openRundownGenerator} className={`text-lg font-medium border-b-4 border-transparent hover:border-cyan-300 transition-all ${isScrolled ? "text-black" : "text-white"} hover:text-cyan-300`}>
+            <button onClick={openRundownGenerator} className="text-lg font-medium text-black border-b-4 border-transparent hover:border-cyan-300 transition-all">
               Generate Rundown
             </button>
           </li>
@@ -133,7 +133,7 @@ const Navbar2 = ({
             <button
               ref={buttonRef}
               onClick={() => setIsCategoryDropdownOpen(prev => !prev)}
-              className={`text-lg font-medium border-b-4 border-transparent hover:border-cyan-300 transition-all flex items-center gap-1 ${isScrolled ? "text-black" : "text-white"} hover:text-cyan-300`}
+              className="text-lg font-medium text-black border-b-4 border-transparent hover:border-cyan-300 transition-all flex items-center gap-1"
             >
               Kategori <span>▾</span>
             </button>
@@ -172,12 +172,12 @@ const Navbar2 = ({
           </li>
 
           <li>
-            <Link to="/rekomendasi" className={`text-lg font-medium border-b-4 border-transparent hover:border-cyan-300 transition-all ${isScrolled ? "text-black" : "text-white"} hover:text-cyan-300`}>
+            <Link to="/rekomendasi" className="text-lg font-medium text-black border-b-4 border-transparent hover:border-cyan-300 transition-all">
               Rekomendasi
             </Link>
           </li>
           <li>
-            <Link to="/about" className={`text-lg font-medium border-b-4 border-transparent hover:border-cyan-300 transition-all ${isScrolled ? "text-black" : "text-white"} hover:text-cyan-300`}>
+            <Link to="/about" className="text-lg font-medium text-black border-b-4 border-transparent hover:border-cyan-300 transition-all">
               Tentang Kami
             </Link>
           </li>
@@ -185,7 +185,7 @@ const Navbar2 = ({
           {isLoggedIn ? (
             <>
               <li>
-                <button onClick={handleProfileClick} className={`text-lg font-medium border-b-4 border-transparent hover:border-cyan-300 transition-all ${isScrolled ? "text-black" : "text-white"} hover:text-cyan-300 flex items-center gap-2`}>
+                <button onClick={handleProfileClick} className="text-lg font-medium text-black border-b-4 border-transparent hover:border-cyan-300 transition-all">
                   {username || "Profile"}
                 </button>
               </li>
