@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useMatch, useResolvedPath } from "react-router-dom";
+import { Link, useMatch, useResolvedPath, useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import RundownGenerator from "./YourTripComponents/RundownGenerator";
 import { collection, getDocs } from "firebase/firestore";
@@ -10,7 +10,6 @@ const Navbar2 = ({
   username,
   handleLogout,
   handleLoginClick,
-  handleProfileClick,
   activeCategory,
   handleCategoryClick
 }) => {
@@ -21,6 +20,7 @@ const Navbar2 = ({
   const [selectedDestinations, setSelectedDestinations] = useState([]);
   const [categories, setCategories] = useState([]);
 
+  const navigate = useNavigate();
   const dropdownRef = useRef(null);
   const buttonRef = useRef(null);
 
@@ -41,6 +41,11 @@ const Navbar2 = ({
     };
     fetchCategories();
   }, []);
+
+    const handleProfileClick = () => {
+    navigate('/profile');
+    setIsMobileMenuOpen(false);
+  };
 
   useEffect(() => {
     const loadSavedTrip = () => {
