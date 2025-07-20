@@ -70,7 +70,7 @@ const About = () => {
   return (
     <div className="relative">
 
-      <Navbar2 
+      <Navbar 
       isLoggedIn={isLoggedIn}
       username={username}
       handleLogout={handleLogout}
