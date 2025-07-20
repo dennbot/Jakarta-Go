@@ -142,8 +142,8 @@ const About = () => {
             <p className="text-gray-600">Stay within your travel budget with our easy-to-use budget tracking tools.</p>
           </div>
           <div className="p-6 bg-blue-50 rounded-lg shadow-md">
-            <h3 className="text-xl font-semibold mb-2">Real-Time Interactive Maps</h3>
-            <p className="text-gray-600">Visualize your travel route and nearby points of interest with real-time maps.</p>
+            <h3 className="text-xl font-semibold mb-2">Keep Your Favorite Trip Close</h3>
+            <p className="text-gray-600">Easily save and revisit your top travel plans anytime, anywhere—perfect for quick access and stress-free planning.</p>
           </div>
         </div>
       </section>
