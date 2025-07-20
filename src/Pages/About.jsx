@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import Navbar2 from '../Components/Navbar2';
+import Navbar from '../Components/Navbar';
 import YourTripPopup from '../Components/YourTrip';
 import { collection, getDocs, doc, getDoc, query, where } from 'firebase/firestore';
 import { db, auth } from '../lib/firebase';
