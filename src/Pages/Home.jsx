@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import YourTripPopup from '../Components/YourTrip';
 import SearchBar from '../Components/SearchBar'; 
+import getAuth from 'firebase/auth';
 
 function Home() {
   const [user, setUser] = useState(null);
