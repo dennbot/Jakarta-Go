@@ -5,10 +5,9 @@ import DestinationCarousel from '../Components/DestinationCarousel';
 import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
 import { db, auth } from '../lib/firebase';
 import { useNavigate } from 'react-router-dom';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 import YourTripPopup from '../Components/YourTrip';
 import SearchBar from '../Components/SearchBar'; 
-import getAuth from 'firebase/auth';
 
 function Home() {
   const [user, setUser] = useState(null);
